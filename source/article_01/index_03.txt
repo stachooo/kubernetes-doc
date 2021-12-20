@@ -1,0 +1,416 @@
+﻿.. Kubernetes documentation master file, created by
+   sphinx-quickstart on Sat Dec  4 15:26:27 2021.
+   
+
+How to Create a Kubernetes Cluster Using OpenStack Magnum on Cloudferro Hosting
+===============================================================================
+
+In this tutorial, you will start with empty Horizon screen and end up running a full Kubernetes cluster. 
+
+What We Are Going To Cover
+--------------------------
+
+ * Creating a new cluster using the default cluster template
+
+ * Creating a new cluster template from scratch 
+
+ * Generating a cluster with a template
+ 
+ * Defining cluster details, such as name, template, keypair and so on.
+
+Prerequisites
+-------------
+
+**Hosting**
+
+You need a Cloudferro hosting account with :ref:`Horizon interface <https://horizon.cloudferro.com>`_.
+
+**Private and public keys **
+
+An SSH key-pair created in OpenStack dashboard. To create it, follow this article  :ref:`How to create key-pair in OpenStack dashboard? <https://creodias.eu/-/a-9-15>`_
+
+There we have created keypair “sshkey” and will use it for the rest of this article. 
+
+**Project quotas and flavors limits**
+
+Article :ref:`Dashboard Overview - Project quotas and flavors limits <https://creodias.eu/-/dashboard-overview-project-quotas-and-flavors-limits>`_ will introduce you to quotas and flavors in OpenStack.  
+
+**Private networks and subnetworks**
+
+Kubernetes containers communicate via a special type of network. There are two ways to create it: 
+
+ * let the system generate it for you when creating the cluster, or
+
+ * create it within the Horizon interface, using the following commands from the left side of the screen: Network, then Networks and click on button + Create Network on the right side of the screen. 
+
+Three Ways of Generating a Kubernetes Cluster under OpenStack Magnum
+--------------------------------------------------------------------
+
+ * 1 Using the Horizon web interface. This is the main goal of this article.
+
+ * 2 Using OpenStack CLI tools. Requires special installations of those tools to begin with. 
+
+  * 3 Using the OpenStack API interface. 
+
+Options 2 and 3 are out of scope of this article. 
+
+Cluster Templates
+-----------------
+
+A cluster template is a set of parameters which govern the creation of Kubernetes clusters in OpenStack environment. The preferred approach is to create your own cluster template and then use it repeatedly. The main option command **Container Infra** has two cubcommands, **Clusters** and **Cluter Templates**. Clicking on the latter shows all cluster templates present in the system:
+
+.. image:/Users/duskosavic/CloudferroDocs/source/article_01/cluster_templates.png
+
+Cluster template *k8s-stable-1.21.5-cf1* is the default template, is present in every configuration and is tested against the usual needs of users. You will use this template to generate your first Kubernetes cluster under OpenStack Magnum. 
+
+Shorthand COE stands for Container Orchestration Engine – software that organizes and controls running of basic containers. 
+
+Template *New Kubernetes* is a template that you build by tweaking or adding new elements into the default template. Here, *New Kubernetes* contains keypair *sshkey* that is not present in the default template. 
+
+To see the parameters for each cluster template, click on its name in blue, in the **Name** column. Here is what the default template looks like:
+
+.. image:/Users/duskosavic/CloudferroDocs/source/article_01/cluster_template_parameters.png
+
+It is *fedora-coreos* public virtual machine, using *calico* for its network driver and so on. You can change most of these parameters while creating your own cluster template.  
+
+Creating new Kubernetes Cluster Using the Default Template
+----------------------------------------------------------
+
+Step 1 Create New Cluster Screen
+++++++++++++++++++++++++++++++++
+
+Click on  **Container Infra** and then on **Clusters**. 
+
+.. image:/Users/duskosavic/CloudferroDocs/source/article_01/clusters_command.png
+
+There are no clusters yet so click on button **+ Create Cluster** on the right side of the screen. 
+
+
+.. image:/Users/duskosavic/CloudferroDocs/source/article_01/create_new_cluster.png
+
+On the left side and in blue color are the main options -- screens into which you will enter data for the cluster. The three with the asterisks, **Details**, **Size**, and **Network** are mandatory, meaning, you must visit these three screens and either enter new values or confirm the offered default values within each screen.  
+
+**Cluster Name**
+
+This is your first cluster, name it just *Kubernetes*. 
+
+**Cluster Template**
+
+There are two templates to choose from, select the default one. 
+
+.. image:/Users/duskosavic/CloudferroDocs/source/article_01/create_new_cluster.png
+
+
+**Availability Zone**
+
+**nova** is the name of one module in OpenStack and is the only option offered here. 
+
+
+**Keypair**
+
+Choose *sshkey* from the Prerequisites section. 
+
+In this step, you have defined main node details, where *node* denotes a Kubernetes node, a part of the cluster that we are forming. 
+
+Click on lower right button **Next** or on option **Size** from the left main menu of the screen to proceed to the next step of defining a Kubernetes cluster.
+
+
+Step 2 Define Master and Worker Nodes
++++++++++++++++++++++++++++++++++++++
+
+This is the critical part of defining the cluster. If the parameters you enter in this screen are wrong or take too many resources, the creation of cluster will fail. 
+
+**Number of Master Nodes**
+
+Kubernetes cluster has master and worker nodes. In real applications, you would want to have at least two master nodes and, in general, as many as you can. Here, you want to create your first cluster in a new environment so settle for 1 master node. 
+
+**Flavor of Master Nodes**
+
+.. image:/Users/duskosavic/CloudferroDocs/source/article_01/flavor_of_master_nodes.png
+
+Here select **eo1.large**. 
+
+**Number of Worker Nodes*
+
+Enter 3. Again, this is for introductory purposes only, in real life this number can vary from less than ten and up to thousands and more. 
+
+**Flavor of Worker Nodes**
+
+Again, choose eo1.large. 
+
+**Auto Scaling**
+
+When there is lot of demand for workers' services, the Kubernetes system can scale to using more worker nodes. You desire 3 worker nodes so the options are to subtract one and add one, hence, the minimum number of worker nodes is 2 and the maximum number is 4. 
+
+In this step, you have defined the size of your cluster, defining the numbers of master and worker nodes, as well as their respective sizes. 
+
+To proceed, click on lower right button **Next** or on option **Network** from the left main menu.
+
+
+Step 3 Network
+++++++++++++++
+
+**Create New Network**
+
+This is the last of mandatory screens and the blue Submit button in the lower right corner is now active. (If it is not, use screen button Back to fix values in previous screens.)
+
+.. image:/Users/duskosavic/CloudferroDocs/source/article_01/network_option.png
+
+Submitting it now will create a new network, accessible on private network only.  
+
+It is worth running this screen at least once, so that you see what the "ideal" Kubernetes network under OpenStack will look like. 
+
+Creating a new network automatically is not always the best option. Each time you let the system do it, it will create a new network and will not delete the old one, meaning that you can deplete cloud resources real fast. 
+
+**Cluster API**
+
+If you choose the network to be accessible on the public internet, you will get a warning:
+
+You still can select it but it makes you be more cautious. Kubernetes clusters are made to run on the server as a backup to the main web interface and not to be used as the web interface itself. 
+
+.. image:/Users/duskosavic/CloudferroDocs/source/article_01/network_access_control.png
+
+**Ingress Controller**
+
+In Kubernetes parlance, *ingress* is the incoming traffic, the traffic from the web for the most part. The opposite, traffic from the network to the internet is called *egress*. 
+
+Ingress controller is a load balancer, it distributes traffic from the outside to a particular node in the cluster. If you are just trying out the system it is not very likely that you will have one such controller ready, so let's move on. 
+
+Also skip options Management and Advanced and click on Submit. 
+
+Step 4 Forming of the Cluster
+-----------------------------
+
+If there is any problem with creation of the cluster, the system will signal it in various ways. You may see a message in the upper right corner, with a red background, like this:
+
+.. image:/Users/duskosavic/CloudferroDocs/source/article_01/unable_to_create_a_cluster.png
+
+Just repeat the process and in most cases you will the following screen:
+
+.. image:/Users/duskosavic/CloudferroDocs/source/article_01/cluster_forming.png
+
+Click on the name of the cluster, *Kubernetes*, and see what it will look like if everything goes well. 
+
+.. image:/Users/duskosavic/CloudferroDocs/source/article_01/creation_in_progress.png
+
+There is another way of controlling the proces. Click on **Network** in the main menu and then on **Network Topology**. You will see the graphical representation of the network, and while it is being created, you will see each new element added in real time. 
+
+Another way to watch is to show labels:
+
+.. image:/Users/duskosavic/CloudferroDocs/source/article_01/network_topology_with_labels.png
+
+Orange area represents the newly formed Kubernetes cluster and there will be four nodes, the one ending with 0 is master, the other three are worker nodes. In this particular image, the cluster has an external router, which is connecting it to the external network.
+
+Other networks are present as well. One, called *Nowhere* is not connected to anything, *dusko net* has attached one instance of fedora virtual machine, and the third network, called *network3* has an external router and can talk to the external network. *network3* and the cluster can be connected through the external network. 
+
+If you wanted to go to production, you would most likely erase all networks that do not support the cluster. 
+
+Cluster generation usually takes from 10 to 15 minutes. It will be automatically abandoned if duration time is longer than 60 minutes. 
+
+Step 5 The Results
+
+
+
+A new network called Kubernetes is formed. 
+
+New instances -- virtual machines that serve as nodes -- are formed as well:
+
+image:/Users/duskosavic/CloudferroDocs/source/article_01/new_instances.png
+
+Their names start with *kubernetes* because that is the name of the cluster. 
+
+A new external router is formed. 
+
+New security groups are formed.
+
+
+
+
+image:/Users/duskosavic/CloudferroDocs/source/article_01/cluster_scaled.png
+
+Step 1 Using existing templates
+You will see the existing cluster templates after clicking on buttons / commands Container Infra and then Cluster Templates. 
+
+
+Click on +Create Cluster Template and define a new template through a series of screen alerts with menus and options. 
+Step 1a Create Cluster Template Info
+
+There are five options for Container Orchestration Engine: 
+
+Choose Kubernetes, as it is by far the most popular system.
+Other parameters are self explanatory, except Disable TLS, which is about rights and certificates. Disable it you want to experiment – then you will not be bound by rights of  access and so on. 
+Step 1b Node Spec
+
+
+Image
+Image is the disc image of the operating system you want to use in  Kubernetes network. You can choose between fedora-coreos v33 and v34. Typically, choose the most recent, here it is v34. 
+ Keypair
+Keypairs are pairs of keys, one public, the other secret. As mentioned in the prerequisites, we shall use keypair dusko in this article. You can add your own key pairs for use in different networks and clusters. 
+Flavor
+Flavor is the size of the virtual machine or container that you can choose from the set of predefined sizes. 
+There is more than 20 flavors and they look like this:
+
+ Master Flavor
+This options allows selecting a flavor for the master node and the set of choices is exactly the same as for option Flavor. 
+Selecting flavors will make or break your cluster creation process. For the first Kubernetes cluster, play safe and choose the smallest for nodes, such as eo1.xsmall and small or medium size flavors for master node, such as eo1.medium. Here 
+Eo1.xsmall will bring you 2 VCPUs, 2GB or RAM, and 16 GB in size. 
+Eo1.large will get you 4VCPUs,  8GB of RAM, and 32 GB in size. 
+hm.2xlarge stands for 16 VCPUs, 128 GB or RAM, and 384 GB in size. 
+You should also consider the overall limits for the account. For instance, you can have maximum of 200 VCPUs, 100GB of RAM, and 1000 GB in size. If your selection goes over the quota, Magnum will not let you create it. 
+
+You can see the overview of the resources usage with commands Compute and Overview. 
+
+
+Volume Driver
+There will be just one volume driver, it is Cinder, a part of OpenStack devoted to volumes and data. 
+Leave the last three options – Docker Storage Driver, Docker Volume Size (GB) and Insecure Registry – empty for now. 
+Step 1 – 3 Defining Network for the cluster
+
+Network Driver 
+Only one option to choose from, Flannel. 
+Leave three fields for proxies empty for now. 
+External Network ID
+Only one option to select, external. 
+Fixed Network
+Choose from one of the existing networks you have already created before starting the process of creating a Kubernetes cluster. 
+
+Fixed Subnet
+The same, only choose one of the predefined private subnets that you have at your disposal.
+DNS
+The same, leave blank or choose from the DNS addresses that you already have.
+Master LB
+This option will create a master load balancer for the cluster. Load balancer accepts network traffic on an externally accessible IP address and connects it to the correct port on your cluster nodes. 
+Floating IP
+If nodes in your cluster need Internet access, you will want to have a floating IP on a standby. Floating IP addresses are part of a pool of addresses and once you “grab” one, you can detach and attach it to different instances on the fly. 
+Step 4 Labels
+
+Labels are key and value pairs of data. For your first cluster template, you do not have to define any label at all. 
+Click on Submit and the Cluster Templates screen will show a new template called Kubernetes. 
+
+
+Step 2 Create a New Cluster Using Cluster Template Kubernetes
+You can create a new cluster directly from the row in which you see Kubernetes template, or you can go one option higher, Container Infra and then Cluster, and click on button Create Cluster there. 
+In either case, you will start an identical process of defining a new cluster, and in this case, it will be a Kubernetes cluster.
+Step 2 Step 1 Details
+You can enter the following data into the Details section of the Create New Cluster series of screens:
+
+Cluster Name
+Obvious enough, here it is Kubernetes one.
+
+Cluster Template
+Choose Kubernetes template that you have created in the previous step. 
+
+Availability Zone
+
+This is nova, a part of OpenStack series of modules.
+Keypair
+Use what you have, here it is dusko.
+Step 2 Size
+Number of Master Nodes
+1 is the minimum and will serve you well for your very first Kubernetes cluster on OpenStack and Cloudferro hosting.
+Flavor of Master Nodes
+This comes predefined and the value is preset from the Kubernetes cluster template. 
+Number of Worker Nodes
+You can put 1 here as well, but it will go against the task of creating a cluster of nodes. Put 2 or 3 or more worker nodes and Kubernetes will use them. 
+Flavor of Worker Nodes
+Comes predefined from cluster templates. Knowing we were going to have several worker nodes, we took precaution and defined the nodes to be the smallest possible. 
+Auto-scale Worker Nodes
+In most cases, you will want this field checked. Auto scaling means Kubernetes will automatically scale a cluster depending on the demand. If more demand shows up, Kubernetes will allocate an additional number of cluster nodes and deployed pods.  Less demand means Kubernetes will decrease the number of nodes and pods it runs. 
+When checked, you will define the minimum and maximum numbers of worker nodes. In our case, we have three nodes, therefore the value of field
+Minimum Number of Worker Nodes
+is 2. For field
+Maximum number of Worker Nodes
+the valus is one higher, 4. 
+Step 3 Network
+In this step you define network type for the cluster. 
+
+Create New Network
+If not checked, you will be prompted with a field to
+Use an Existing Network
+In this case, you can select dusko net, one of the networks available in the system.
+
+For network access control, there is a field called 
+Cluster API
+
+There two values to choose from:
+ Accessible on private network only – an option that makes  most sense given the nature of Kubernetes clusters, and
+Accessible on the public internet, which is not considered a wise choice. 
+
+Ingress Controller
+Ingress is an API object that provides external access to the cluster, connecting HTTP and HTTPS routes from the outside to the services within the cluster. An ingress has two parts:
+
+Ingress resource, which connects inboud traffic to the services within the cluster, and
+Ingress controller, which reacts to that traffic, usually with a HTTP or load balancer. 
+If this is your first encounter with Kubernetes clusters, just leave this field blank.
+Management
+There is only one field here, to check or uncheck:
+
+Automatically Repair Unhealthy Nodes
+A node cen become “unhealthy” for a variety of reasons – hardware malfunction, errors in software, server configuration errors and so on. With this option turned on, Kubernetes will replace the unhealthy nodes and will force the number of nodes to always align with the original template. 
+It guarantees quality of the cluster so usually turn it on. 
+
+Advanced
+In this screen you enter labels, much in the same way as when generating cluster templates.
+
+You have filled in all the data and Magnum will now start creating your new cluster. If for any reason it cannot create the cluster, it will show a message in red background in the uppre right corner. There may be a number of reasons why a cluster cannot be created but the first measure is to restart the browser window and see whether that will fix the situation. 
+
+If not, look for help from hosting support. 
+
+In most cases, you will be a green message, stating that your new cluster is created. Then you will see a message CREATE_IN_PROGRESS in the Clusters / Stats window but the story does not end there. The cluster is not formed yet and waiting to see whether there is a problem would be a huge mistake here. Immediately click on the name of the cluster and scroll to the very bottom, with the title of Record Properties:
+
+ 
+
+The message in there will tell you what is the problem. In this case, the image needs 10 GB of memory while flavor eo1.xsmall has only 8. You can solve this by selecting a flavor larger than 10 GB so repeat the process with that in mind.
+
+Delete cluster three and repeat the process of creating the cluster, now selecting larger flavors along the road. Select cluster template Kubernetes and select option Update Cluster Template.
+
+
+Select eo1.xmedium as the flavor in Node Spec window and submit. Now create the cluster again, using the changed Kubernetes template. 
+Scroll down to  Record Properties and see that Status is CREATE_IN_PROGRESS. That is a very good sign and you will now have to wait for approximately 5 to 10 minutes for the process to finish. 
+
+Note that the process of cluster creation is limited to 60 minutes. You can see it under the title of Miscellaneous: 
+
+
+After 12 minutes, the process has finished with a message CREATE_COMPLETE:
+
+
+We now see a new cluster, Kub, in the list of clusters:
+
+
+
+
+To create a new Kubernetes cluster, have a look at the existing cluster template called k8s-stable-1.21.5-cf1. Click on its name and see the choice of parameters. Cluster distro is fedora-coreos, while the flavors for master and workers and the same, m4.c4. Click on Clusters and start the process of defining a new cluster, based on this template. 
+Fedora image needs 10 GB of storage so you have to choose a flavor larger than that. Choose eo2.xlarge as the first flavor that has more storage than 10 GB - 16 GB to be exact. 
+
+
+
+
+
+
+After logging, the first screen will show the Limits and Usage Summaries. 
+
+.. image:/Users/duskosavic/CloudferroDocs/docs/source/Article_01/limit_summary.png
+   :height: 200px
+   :width: 200px
+   :scale: 100 %
+   :alt: Limit Summary for OpenStack Magnum Horizon cloud
+   :align: center
+   
+On the left side is the main menu. Click on Container Infra and two options will appear, Clusters and Cluster Templates. 
+
+
+
+
+
+.. toctree::
+   :maxdepth: 3
+   :caption: Contents:
+
+
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
