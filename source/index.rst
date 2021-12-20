@@ -1,27 +1,15 @@
-Welcome to cfdocs's documentation!
-==================================
+.. Kubernetes Clusters Series 
 
-Header:
-^^^^^^^^
-
-CloudFerro documentation.
-
-Tekst 123
-
-TEST !@$%^&(((!@(#($!@)%)%!@_)))::
-
-   fmt.Prinln("Hello, world!")
-   >> Hello, world
-
-Guide:
-^^^^^^
+Welcome to Kubernetes Clusters Series!
+====================================================
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
+   :caption: Contents:
 
-   test
-
-
+   article_01/index.rst
+   article_02/index.rst
+   article_14/index.rst
 
 
 Indices and tables
@@ -30,4 +18,3 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
-
