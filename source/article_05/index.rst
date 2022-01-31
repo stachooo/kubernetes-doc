@@ -106,7 +106,7 @@ The result of this command is shown in the row below:
 
    export KUBECONFIG=/Users/duskosavic/CloudferroDocs/k8sdir/config
 
-System variable KUBECONFIG has been initialized and so the **kubectl** command will always have access to the *config* file. 
+Copy this command and paste it into the command line of terminal, then press the *Enter* key on the keyboard to execute it. System variable KUBECONFIG will be thus initialized and the **kubectl** command will have access to the *config* file at all times. 
 
 Step 2 Create KUBERNETES_URL Variable for Kubectl
 -------------------------------------------------
