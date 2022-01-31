@@ -5,8 +5,8 @@
    :description: How to autoscale Kubernetes Cluster 
    :keywords: Cloudferro, OpenStack, Magnum, Kubernetes, cluster, nodegroups, Kubernetes nodegroups, creating nodegroups
 
-How to Create and Return a Floating IP on Cloudferro OpenStack Magnum
-=====================================================================
+How to Create and Return a Floating IP Address on Cloudferro OpenStack Magnum
+=============================================================================
 
 Written by `Dusko Savic <https://duskosavic.com>`_.
 
