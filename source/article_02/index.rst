@@ -1,6 +1,6 @@
 .. Kubernetes documentation master file, created by
    sphinx-quickstart on Sat Dec  4 15:26:27 2021.
-
+ 
 .. meta::
    :description: How to create a Kubernetes cluster template 
    :keywords: cluster template, Cloudferro, OpenStack, Magnum, Kubernetes, cluster, network
@@ -19,7 +19,7 @@ What We Are Going To Cover
  * Creating a new Kubernetes cluster template 
 
  * Using labels to change the behaviour of Magnum
-
+ 
  * Creating a new Kubernetes cluster using that template
 
 
