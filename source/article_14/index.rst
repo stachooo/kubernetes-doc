@@ -1,7 +1,7 @@
 .. Kubernetes documentation master file, created by
    sphinx-quickstart on Sat Dec  4 15:26:27 2021.
-   
-:
+    
+.. meta::
    :description: What security rules will protect your network? 
    :keywords: security groups, security rules, Cloudferro, OpenStack, Magnum, Kubernetes, cluster, network
 
@@ -77,7 +77,7 @@ Security group *Kubernetes Security Group* extends the *default* security group 
 
  * pings (ICMP protocol),
 
- * port 22 for FTP traffic, 
+ * port 22 for SFTP traffic, 
 
  * port 80 for HTTP traffic,
 
