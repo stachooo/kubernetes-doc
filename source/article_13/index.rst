@@ -138,7 +138,7 @@ These are the data for *router1*:
 
 .. image:: create_router_cli.png
 
-The **id** value of **1f10d0af-27d6-4af7-8c9d-44a719809aad** is important as it will be used in further commands. 
+The **id** value of **a740c091-21de-44b2-8f34-da900b7a7731** is important as it will be used in further commands. 
 
 Step 5 Link Router to the *external* Network
 --------------------------------------------
@@ -147,7 +147,7 @@ In this step you will link router with the above **id** to the *external* networ
 
 .. code::
 
-   openstack router set 1f10d0af-27d6-4af7-8c9d-44a719809aad 
+   openstack router set a740c091-21de-44b2-8f34-da900b7a7731 
       --external-gateway external
 
 It is more precise to use the value of **id** than the name of the router; it may well be that there are two or more routers with the same name if you have executed several **router create** commands while testing. 
