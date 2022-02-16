@@ -122,6 +122,8 @@ to create file called *redis.yaml* and copy the following rows into it:
 
 .. code::
 
+
+
    apiVersion: v1
    kind: Pod
    metadata:
@@ -132,10 +134,12 @@ to create file called *redis.yaml* and copy the following rows into it:
        image: redis
        volumeMounts:
        - name: redis-storage
-        mountPath: /data/redis
+         mountPath: /data/redis
      volumes:
      - name: redis-storage
        emptyDir: {}
+
+
 
 This is how it will look like in the terminal:
 
